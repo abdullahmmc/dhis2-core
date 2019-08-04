@@ -31,6 +31,7 @@ package org.hisp.dhis.common;
 import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.EnumUtils.isValidEnum;
 
