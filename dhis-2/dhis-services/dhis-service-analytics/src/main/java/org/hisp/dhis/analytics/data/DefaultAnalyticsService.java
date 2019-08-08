@@ -156,6 +156,8 @@ public class DefaultAnalyticsService
 
     private final DataQueryService dataQueryService;
 
+    private final Resolver resolver;
+
     private final DhisConfigurationProvider dhisConfig;
 
     private final CacheProvider cacheProvider;
@@ -181,14 +183,11 @@ public class DefaultAnalyticsService
     }
 
     @Autowired
-    private Resolver resolver;
-
-    @Autowired
     public DefaultAnalyticsService( AnalyticsManager analyticsManager, RawAnalyticsManager rawAnalyticsManager,
         AnalyticsSecurityManager securityManager, QueryPlanner queryPlanner, QueryValidator queryValidator,
         ConstantService constantService, ExpressionService expressionService,
         OrganisationUnitService organisationUnitService, SystemSettingManager systemSettingManager,
-        EventAnalyticsService eventAnalyticsService, DataQueryService dataQueryService,
+        EventAnalyticsService eventAnalyticsService, DataQueryService dataQueryService, Resolver resolver,
         DhisConfigurationProvider dhisConfig, CacheProvider cacheProvider, Environment environment)
     {
         checkNotNull( analyticsManager );
@@ -202,6 +201,7 @@ public class DefaultAnalyticsService
         checkNotNull( systemSettingManager );
         checkNotNull( eventAnalyticsService );
         checkNotNull( dataQueryService );
+        checkNotNull( resolver );
         checkNotNull( dhisConfig );
         checkNotNull( cacheProvider );
         checkNotNull( environment );
@@ -217,6 +217,7 @@ public class DefaultAnalyticsService
         this.systemSettingManager = systemSettingManager;
         this.eventAnalyticsService = eventAnalyticsService;
         this.dataQueryService = dataQueryService;
+        this.resolver = resolver;
         this.dhisConfig = dhisConfig;
         this.cacheProvider = cacheProvider;
         this.environment = environment;

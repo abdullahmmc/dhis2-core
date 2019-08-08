@@ -44,10 +44,10 @@ public interface CategoryOptionComboStore
     void updateNames();
 
     /**
-     * Fetch all {@see CategoryOptionCombo} from a given {@see CategoryOptionGroup}
-     * uid
+     * Fetch all {@see CategoryOptionCombo} from a given {@see CategoryOptionGroup} uid.
+     *
      * A {@see CategoryOptionGroup} is a collection of {@see CategoryOption}. Therefore, this method finds all
-     * {@see CategoryOptionCombo} for all the members of the given  {@see CategoryOptionGroup}
+     * {@see CategoryOptionCombo} for all the members of the given {@see CategoryOptionGroup}
      *
      * @param groupId a {@see CategoryOptionGroup} uid
      * @return a List of {@see CategoryOptionCombo} or empty List
