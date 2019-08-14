@@ -98,7 +98,9 @@ public class CategoryOptionGroupResolverTest
     {
         DimensionalItemId dimensionalItemId = new DimensionalItemId( DimensionItemType.DATA_ELEMENT_OPERAND, elem1,
             elem2, elem3 );
+
         CategoryOptionGroup categoryOptionGroup = createCategoryOptionGroup( 'A' );
+        // {DEUID.COGUID.AOCUID}
         String exp = createIndicatorExp();
 
         when( expressionService.getDimensionalItemIdsInExpression( exp ) )

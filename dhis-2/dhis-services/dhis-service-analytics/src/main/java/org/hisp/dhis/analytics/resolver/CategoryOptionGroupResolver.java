@@ -45,6 +45,8 @@ import org.hisp.dhis.expression.ExpressionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.transform.Source;
+
 /**
  * @author Luciano Fiandesio
  */
@@ -102,7 +104,9 @@ public class CategoryOptionGroupResolver
                     {
                         Set<String> cocs = resolveCoCFromCog( cogUid.get() );
                         resolvedExpression.add( resolve( cocs, dataElementUid ) );
+                        System.out.println(resolvedExpression.get(0));
                     }
+
 
                     // TODO if the third element is AOCUID.. what do I do?
                 } );

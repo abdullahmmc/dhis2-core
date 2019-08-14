@@ -130,4 +130,16 @@ public class HibernateCategoryOptionComboStore
         query.where( builder.equal( joinCatOptionGroup.get( "uid" ), groupUid ) );
         return getSession().createQuery( query ).list();
     }
+
+    public static void main(String[] args) {
+        String SQL = "SELECT coc.uid " +
+            "FROM categoryoptioncombos_categoryoptions ccc " +
+            "JOIN categoryoptioncombo coc ON ccc.categoryoptioncomboid = coc.categoryoptioncomboid " +
+            "WHERE categoryoptionid IN " +
+            "    (SELECT categoryoptionid " +
+            "     FROM categoryoptiongroupmembers cogm " +
+            "     JOIN categoryoptiongroup cog ON cogm.categoryoptiongroupid = cog.categoryoptiongroupid " +
+            "     WHERE cog.uid = ?)";
+        System.out.println(SQL);
+    }
 }
