@@ -33,5 +33,18 @@ package org.hisp.dhis.analytics.resolver;
  */
 public interface Resolver
 {
+    /**
+     * Resolve one of the expressions below:
+     *
+     * 1) #{DEUID.COGUID.AOCUID}
+     * 2) #{DEUID.COCUID.COGUID}
+     * 3) #{DEUID.COG1UID.COG2UID}
+     *
+     * Expression 1 is resolved to (deuid.coc1 + deuid.coc2)
+     *
+     *
+     * @param expression
+     * @return
+     */
     String resolve( String expression );
 }

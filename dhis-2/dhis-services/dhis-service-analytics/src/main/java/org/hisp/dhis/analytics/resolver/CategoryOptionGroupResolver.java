@@ -45,8 +45,6 @@ import org.hisp.dhis.expression.ExpressionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.transform.Source;
-
 /**
  * @author Luciano Fiandesio
  */
@@ -95,21 +93,23 @@ public class CategoryOptionGroupResolver
             // First element is always the Data Element Id
             String dataElementUid = dimensionalItemId.getId0();
 
-            Stream.of( dimensionalItemId.getId1(), dimensionalItemId.getId2() ).filter( Objects::nonNull )
-                .forEach( uid -> {
+            String secondElement = dimensionalItemId.getId1();
+            Optional<String> cogUid = getCategoryOptionGroupUid( secondElement );
+            if ( cogUid.isPresent() )
+            {
+                Set<String> cocs = resolveCoCFromCog( cogUid.get() );
+                resolvedExpression.add( resolve( cocs, dataElementUid ) );
+                System.out.println(resolvedExpression.get(0));
+            }
 
-                    Optional<String> cogUid = getCategoryOptionGroupUid( uid );
-
-                    if ( cogUid.isPresent() )
-                    {
-                        Set<String> cocs = resolveCoCFromCog( cogUid.get() );
-                        resolvedExpression.add( resolve( cocs, dataElementUid ) );
-                        System.out.println(resolvedExpression.get(0));
-                    }
-
-
-                    // TODO if the third element is AOCUID.. what do I do?
-                } );
+            String thirdElement = dimensionalItemId.getId2();
+            cogUid = getCategoryOptionGroupUid( secondElement );
+            if ( cogUid.isPresent() )
+            {
+                Set<String> cocs = resolveCoCFromCog( cogUid.get() );
+                resolvedExpression.add( resolve( cocs, dataElementUid ) );
+                System.out.println(resolvedExpression.get(0));
+            }
         }
         return expression;
     }
