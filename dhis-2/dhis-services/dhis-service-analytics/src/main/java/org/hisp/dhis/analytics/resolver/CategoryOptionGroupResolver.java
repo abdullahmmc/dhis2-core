@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.base.Joiner;
+import org.hisp.dhis.category.CategoryOptionCombo;
 import org.hisp.dhis.category.CategoryOptionComboStore;
 import org.hisp.dhis.category.CategoryOptionGroup;
 import org.hisp.dhis.category.CategoryOptionGroupStore;
@@ -84,40 +86,45 @@ public class CategoryOptionGroupResolver
         // Get a DimensionalItemId from the expression. The expression is parsed and
         // each element placed in the DimensionalItemId
         Set<DimensionalItemId> dimItemIds = expressionService.getDimensionalItemIdsInExpression( expression );
-
+        List<String> resolvedOperands = new ArrayList<>();
         if ( isDataElementOperand( dimItemIds ) )
         {
-            List<String> resolvedExpression = new ArrayList<>(2);
-
             DimensionalItemId dimensionalItemId = dimItemIds.stream().findFirst().get();
             // First element is always the Data Element Id
             String dataElementUid = dimensionalItemId.getId0();
 
-            String secondElement = dimensionalItemId.getId1();
-            Optional<String> cogUid = getCategoryOptionGroupUid( secondElement );
-            if ( cogUid.isPresent() )
-            {
-                Set<String> cocs = resolveCoCFromCog( cogUid.get() );
-                resolvedExpression.add( resolve( cocs, dataElementUid ) );
-                System.out.println(resolvedExpression.get(0));
-            }
-
-            String thirdElement = dimensionalItemId.getId2();
-            cogUid = getCategoryOptionGroupUid( secondElement );
-            if ( cogUid.isPresent() )
-            {
-                Set<String> cocs = resolveCoCFromCog( cogUid.get() );
-                resolvedExpression.add( resolve( cocs, dataElementUid ) );
-                System.out.println(resolvedExpression.get(0));
-            }
+            resolvedOperands
+                .addAll( evaluate( dataElementUid, dimensionalItemId.getId1(), dimensionalItemId.getId2() ) );
+            
+            resolvedOperands.addAll( evaluate( dataElementUid, dimensionalItemId.getId2(), null ) );
         }
-        return expression;
+        return Joiner.on( "+" ).join( resolvedOperands );
+    }
+    
+    private List<String> evaluate( String dataElementUid, String uid, String uid2 )
+    {
+        List<String> resolvedExpression = new ArrayList<>();
+        Optional<String> cogUid = getCategoryOptionGroupUid( uid );
+        if ( cogUid.isPresent() )
+        {
+            Set<String> cocs = resolveCoCFromCog( cogUid.get() );
+            resolvedExpression = Arrays.asList( resolve( cocs, dataElementUid, uid2 ).split( "\\+" ) );
+        }
+        return resolvedExpression;
+    }
+    
+    private String resolve( Set<String> cocs, String dataElementUid, String third )
+    {
+        boolean isAoc = isAoc( third );
+        
+        return cocs.stream()
+            .map( coc -> EXP_OPEN + dataElementUid + SEPARATOR + coc + (isAoc ? SEPARATOR + third : "") + EXP_CLOSE )
+            .collect( Collectors.joining( "+" ) );
     }
 
-    private String resolve( Set<String> cocs, String dataElementUid )
+    private boolean isAoc( String uid )
     {
-        return cocs.stream().map( s -> EXP_OPEN + dataElementUid + SEPARATOR + s + EXP_CLOSE )
-            .collect( Collectors.joining( "+" ) );
+        return (uid != null && categoryOptionComboStore.getByUid(uid) != null);
     }
 
     private Optional<String> getCategoryOptionGroupUid( String uid )
